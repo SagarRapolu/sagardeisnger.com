@@ -88,8 +88,32 @@
   }
   .nav-cta-icon svg{width:13px;height:13px;}
   .nav-cta:hover .nav-cta-icon{transform:translateX(2px);}
+  .nav-toggle{
+    display:none;flex:none;width:36px;height:36px;border-radius:50%;
+    align-items:center;justify-content:center;
+    background:none;border:1px solid var(--line);color:var(--text);
+    cursor:pointer;transition:border-color .15s,color .15s;
+  }
+  .nav-toggle svg{width:17px;height:17px;}
+  .nav-toggle:hover{color:var(--accent);border-color:var(--accent);}
+  .mobile-nav-panel{
+    position:absolute;left:20px;right:20px;top:calc(100% + 8px);
+    pointer-events:auto;z-index:49;
+    display:flex;flex-direction:column;gap:2px;
+    padding:8px;border-radius:20px;
+    background:color-mix(in oklab, var(--surface) 94%, transparent);
+    border:1px solid var(--line);backdrop-filter:blur(16px);
+    box-shadow:0 12px 34px rgba(0,0,0,.45);
+  }
+  .mobile-nav-panel[hidden]{display:none;}
+  .mobile-nav-panel a{
+    text-decoration:none;color:var(--text-dim);font-size:0.92rem;
+    padding:12px 16px;border-radius:12px;transition:color .15s,background .15s;
+  }
+  .mobile-nav-panel a:hover{color:var(--accent);background:var(--surface-2);}
   @media (max-width:640px){
     nav.links{display:none;}
+    .nav-toggle{display:inline-flex;margin-left:auto;}
     header.nav{padding:calc(14px + env(safe-area-inset-top,0px)) 14px 0;}
     .nav-inner{padding:7px 7px 7px 18px;}
   }
@@ -211,7 +235,7 @@
   }
   @media (prefers-reduced-motion:reduce){ .scroll-badge-text{animation:none;} .scroll-badge-arrow{animation:none;} }
   @keyframes badge-bob{0%,100%{transform:translateY(-2px);}50%{transform:translateY(3px);}}
-  @media (max-width:760px){ .scroll-badge{display:none;} }
+  @media (max-width:900px){ .scroll-badge{display:none;} }
 
   /* ---------- hero layout (text + twin image cards) ---------- */
   .hero-grid{
@@ -1038,12 +1062,48 @@
       <a href="#skills">Skills</a>
       <a href="#contact">Contact</a>
     </nav>
+    <button type="button" id="nav-toggle-btn" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav-panel" onclick="toggleMobileNav()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+    </button>
     <a class="nav-cta" href="#" onclick="openSayHelloModal(event)">
       Say hello
       <span class="nav-cta-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span>
     </a>
   </div>
+  <nav id="mobile-nav-panel" class="mobile-nav-panel" hidden>
+    <a href="#work" onclick="closeMobileNav()">Experience</a>
+    <a href="#projects" onclick="closeMobileNav()">Portfolio</a>
+    <a href="#skills" onclick="closeMobileNav()">Skills</a>
+    <a href="#contact" onclick="closeMobileNav()">Contact</a>
+  </nav>
 </header>
+<script>
+  function toggleMobileNav(){
+    var panel = document.getElementById('mobile-nav-panel');
+    var btn = document.getElementById('nav-toggle-btn');
+    if(!panel) return;
+    var willOpen = panel.hidden;
+    panel.hidden = !willOpen;
+    if(btn) btn.setAttribute('aria-expanded', String(willOpen));
+  }
+  function closeMobileNav(){
+    var panel = document.getElementById('mobile-nav-panel');
+    var btn = document.getElementById('nav-toggle-btn');
+    if(panel) panel.hidden = true;
+    if(btn) btn.setAttribute('aria-expanded', 'false');
+  }
+  document.addEventListener('click', function(e){
+    var panel = document.getElementById('mobile-nav-panel');
+    var btn = document.getElementById('nav-toggle-btn');
+    if(!panel || panel.hidden) return;
+    if(!panel.contains(e.target) && e.target !== btn && !btn.contains(e.target)){
+      closeMobileNav();
+    }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeMobileNav();
+  });
+</script>
 
 <section id="top" class="hero" style="border-bottom:none;padding-bottom:110px;">
   <div class="hero-bg" aria-hidden="true">
@@ -1592,7 +1652,7 @@
         </div>
         <div>
           <div class="ct-label">Behance</div>
-          <div class="ct-value">/Akhil9_9</div>
+          <div class="ct-value">/sagarrapolu24</div>
         </div>
       </a>
     </div>
